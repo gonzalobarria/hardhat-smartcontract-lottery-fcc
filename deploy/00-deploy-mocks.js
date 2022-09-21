@@ -12,6 +12,7 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
 
   if (developmentChains.includes(network.name)) {
     //deploy mocks
+    log('Red local detectada, deploying mocks');
 
     await deploy('VRFCoordinatorV2Mock', {
       from: deployer,
@@ -19,8 +20,8 @@ module.exports = async function ({ getNamedAccounts, deployments }) {
       args,
     });
 
-    console.log('Mocks Deployed!');
-    console.log('-----------------');
+    log('Mocks Deployed!');
+    log('-----------------');
   }
 };
 

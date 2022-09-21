@@ -25,6 +25,9 @@ module.exports = {
   },
   defaultNetwork: 'hardhat',
   networks: {
+    hardhat: {
+      chainId: 31337,
+    },
     goerli: {
       url: GOERLI_RPC_URL,
       accounts: [PRIVATE_KEY],
@@ -39,5 +42,12 @@ module.exports = {
     player: {
       default: 1,
     },
+  },
+  gasReporter: {
+    enabled: false,
+    outputFile: 'gas-report.txt',
+    noColors: true,
+    currency: 'USD',
+    // coinmarketcap: COINMARKETCAP_API_KEY,
   },
 };
