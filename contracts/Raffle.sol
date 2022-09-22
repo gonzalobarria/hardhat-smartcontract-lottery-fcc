@@ -88,8 +88,6 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
   function performUpkeep(
     bytes calldata /* performData */
   ) external override {
-    s_raffleState = RaffleState.CALCULATING;
-
     (bool upkeepNeeded, ) = checkUpkeep('');
     if (!upkeepNeeded)
       revert Raffle__UpKeepNotNeeded(
@@ -97,6 +95,8 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
         s_players.length,
         uint256(s_raffleState)
       );
+
+    s_raffleState = RaffleState.CALCULATING;
 
     uint256 requestId = i_vrfCoordinator.requestRandomWords(
       i_gasLane,
