@@ -8,7 +8,7 @@ const {
 !developmentChains.includes(network.name)
   ? describe.skip
   : describe('Raffle unit Test', async () => {
-      let raffle, vrfCoordinatorV2Mock, entranceFee, deployer;
+      let raffle, vrfCoordinatorV2Mock, entranceFee, deployer, interval;
       const chainId = network.config.chainId;
 
       beforeEach(async () => {
@@ -21,12 +21,12 @@ const {
           deployer
         );
         entranceFee = await raffle.getEntranceFee();
+        interval = await raffle.getInterval();
       });
 
       describe('constructor', async () => {
         it('Inicia el raffle correctamente', async () => {
           const raffleState = await raffle.getRaffleState();
-          const interval = await raffle.getInterval();
           assert.equal(raffleState.toString(), '0');
           assert.equal(interval, networkConfig[chainId]['interval']);
         });
@@ -53,9 +53,16 @@ const {
         });
 
         it('no permite la entrada cuando está calculando', async () => {
-          raffle.enterRaffle({ value: entranceFee });
-          // const raffleState = await raffle.getRaffleState();
-          // assert.equal(raffleState.toString(), '0');
+          await raffle.enterRaffle({ value: entranceFee });
+          await network.provider.send(
+            'evm_increaseTime',
+            [interval.toNumber() + 1]
+          );
+          await network.provider.send('evm_mine', []);
+          await raffle.performUpkeep([]);
+          await expect(
+            raffle.enterRaffle({ value: entranceFee })
+          ).to.be.revertedWith('Raffle__NotOpen');
         });
       });
     });
