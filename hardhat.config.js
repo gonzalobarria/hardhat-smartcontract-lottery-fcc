@@ -43,6 +43,9 @@ module.exports = {
       default: 1,
     },
   },
+  mocha: {
+    timeout: 200000,
+  },
   gasReporter: {
     enabled: false,
     outputFile: 'gas-report.txt',
